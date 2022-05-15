@@ -1,5 +1,7 @@
 ## Python Windows Utils
 
+Set of python scripts to simplify your life while using Windows 10 
+
 
 ## Added utils
 
