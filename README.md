@@ -8,7 +8,7 @@
 
 ## To be added
 
-❌ YouTube dowlnoader </br>
+❌ YouTube downloader </br>
 ❌ Blank repo init </br>
 ❌ Django project init </br>
 More to come... </br>
