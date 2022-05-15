@@ -5,7 +5,7 @@ Set of python scripts to simplify your life while using Windows 10
 
 ## Added utils
 
-✔ File encrypter/decrypter </br>
+✔ File encrypter/decryptor </br>
 
 
 ## To be added
