@@ -1,6 +1,7 @@
 import importlib.util
+import sys
 
-PROJECT_PATH = 'C:\Veci\programming\python-utils'
+PROJECT_PATH = list(sys.argv)[1]
 
 
 def main():

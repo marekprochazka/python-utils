@@ -1,1 +1,1 @@
-python C:\Veci\programming\python-utils\python-utils.py
+python C:\Veci\programming\python-utils\python-utils.py "C:\Veci\programming\python-utils"
