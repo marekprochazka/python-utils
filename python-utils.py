@@ -11,6 +11,11 @@ def main():
         hasher = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(hasher)
         hasher.hasher()
+    elif choice == "DEV":
+        spec = importlib.util.spec_from_file_location("dev_test", f"{PROJECT_PATH}\dev_test\dev_test_rust.py")
+        dev_test = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(dev_test)
+        dev_test.test()
     else:
         print("Invalid choice")
 
@@ -24,6 +29,7 @@ def hello() -> str:
     print("_______________________________________________________________________________")
     print("Select an option:")
     print("1. File encryptor/decryptor")
+    print("DEV dev test")
 
     return input("Your choise: ")
 
