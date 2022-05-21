@@ -11,6 +11,11 @@ def main():
         hasher = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(hasher)
         hasher.hasher()
+    elif choice == "2":
+        spec = importlib.util.spec_from_file_location("folder_admin", f"{PROJECT_PATH}\\folder_admin\\folder_admin.py")
+        folder_admin = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(folder_admin)
+        folder_admin.folder_admin()
     elif choice == "DEV":
         spec = importlib.util.spec_from_file_location("dev_test", f"{PROJECT_PATH}\dev_test\dev_test_rust.py")
         dev_test = importlib.util.module_from_spec(spec)
@@ -29,6 +34,7 @@ def hello() -> str:
     print("_______________________________________________________________________________")
     print("Select an option:")
     print("1. File encryptor/decryptor")
+    print("2. Folder administrator")
     print("DEV dev test")
 
     return input("Your choise: ")
