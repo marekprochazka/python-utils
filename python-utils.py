@@ -15,7 +15,16 @@ COLOR__CYAN = 2
 COLOR__GREEN = 3
 
 
-def setup_cli() -> cli.SelectConfig:
+def init_cli(stdscr) -> cli.CLI:
+    curses.start_color()
+    curses.use_default_colors()
+    curses.init_pair(1, curses.COLOR_WHITE, curses.COLOR_BLACK)
+    curses.init_pair(2, curses.COLOR_CYAN, curses.COLOR_BLACK)
+    curses.init_pair(3, curses.COLOR_GREEN, curses.COLOR_BLACK)
+    return cli.CLI(stdscr)
+
+
+def menu_select(controller: cli.CLI) -> cli.SelectOption:
     options = [
         cli.SelectOption("File encryptor/decryptor", "1"),
         cli.SelectOption("Folder administrator", "2"),
@@ -31,8 +40,7 @@ def setup_cli() -> cli.SelectConfig:
             "_______________________________________________________________________________", COLOR__WHITE, 0, 4),
     ]
 
-    return cli.SelectConfig(
-        multiselect=False,
+    conf = cli.SelectConfig(
         options=options,
         helper_text=helper_text,
         default_color=COLOR__WHITE,
@@ -40,18 +48,15 @@ def setup_cli() -> cli.SelectConfig:
         start_x=0,
         start_y=5,
     )
+    return controller.select(conf)
 
 
 def main(stdscr):
-    curses.start_color()
-    curses.use_default_colors()
-    curses.init_pair(1, curses.COLOR_WHITE, curses.COLOR_BLACK)
-    curses.init_pair(2, curses.COLOR_CYAN, curses.COLOR_BLACK)
-    curses.init_pair(3, curses.COLOR_GREEN, curses.COLOR_BLACK)
-    controller = cli.CLI(stdscr)
-    choice = controller.select(setup_cli())[0].identifier
+    controller = init_cli(stdscr)
+    choice = menu_select(controller).identifier
     stdscr.keypad(0)
-    curses.echo() ; curses.nocbreak()
+    curses.echo()
+    curses.nocbreak()
     curses.endwin()
     if choice == "1":
         spec = importlib.util.spec_from_file_location(
@@ -73,19 +78,6 @@ def main(stdscr):
         dev_test.test()
     else:
         print("Invalid choice")
-
-
-def hello() -> str:
-    print("python-utils version 0.0.1")
-    print("Copyright (c) 2022 Marek Prochazka")
-    print("Licence: MIT")
-    print("_______________________________________________________________________________")
-    print("Select an option:")
-    print("1. File encryptor/decryptor")
-    print("2. Folder administrator")
-    print("DEV dev test")
-
-    return input("Your choise: ")
 
 
 if __name__ == "__main__":
