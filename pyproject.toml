@@ -17,6 +17,7 @@ classifiers = [
 python = "^3.9"
 cryptography = "^37.0.2"
 rust_toolkit = {file = "rust_toolkit/rust_lib/rust_toolkit-0.1.0-cp39-none-win_amd64.whl"}
+windows-curses = "^2.3.0"
 
 
 [tool.poetry.dev-dependencies]
