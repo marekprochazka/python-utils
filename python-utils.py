@@ -50,34 +50,40 @@ def menu_select(controller: cli.CLI) -> cli.SelectOption:
     )
     return controller.select(conf)
 
-
-def main(stdscr):
-    controller = init_cli(stdscr)
-    choice = menu_select(controller).identifier
+def end_cli(stdscr):
     stdscr.keypad(0)
     curses.echo()
     curses.nocbreak()
     curses.endwin()
+
+def main(stdscr):
+    controller = init_cli(stdscr)
+    choice = menu_select(controller)
+    choice = choice.identifier if choice != None else "None"
     if choice == "1":
+        end_cli(stdscr)
         spec = importlib.util.spec_from_file_location(
             "hasher", f"{PROJECT_PATH}\hasher\hasher.py")
         hasher = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(hasher)
         hasher.hasher()
     elif choice == "2":
+        end_cli(stdscr)
         spec = importlib.util.spec_from_file_location(
             "folder_admin", f"{PROJECT_PATH}\\folder_admin\\folder_admin.py")
         folder_admin = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(folder_admin)
         folder_admin.folder_admin()
     elif choice == "DEV":
+        end_cli(stdscr)
         spec = importlib.util.spec_from_file_location(
             "dev_test", f"{PROJECT_PATH}\dev_test\dev_test_rust.py")
         dev_test = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(dev_test)
         dev_test.test()
     else:
-        print("Invalid choice")
+        end_cli(stdscr)
+        print("Programm ended")
 
 
 if __name__ == "__main__":
