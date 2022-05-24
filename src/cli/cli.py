@@ -2,6 +2,11 @@ import curses
 from typing import List, Optional
 
 
+COLOR__WHITE = 1
+COLOR__CYAN = 2
+COLOR__GREEN = 3
+
+
 class WinString:
     def __init__(self, text: str, color: int, start_x: int, start_y: int):
         self.text = text
@@ -31,11 +36,30 @@ class CLI:
     KEY_ENTER: int = 10
     KEY_ESC: int = 27
     KEY_SPACE: int = 32
+    stdscr = None
 
-    def __init__(self, stdscr):
-        self.stdscr = stdscr
+    def __init__(self):
+        self.__init_cli()
         self.stdscr.erase()
         self.stdscr.refresh()
+
+    def __init_cli(self):
+        self.stdscr = curses.initscr()
+        curses.start_color()
+        self.stdscr.keypad(1)
+        curses.use_default_colors()
+        curses.init_pair(1, curses.COLOR_WHITE, curses.COLOR_BLACK)
+        curses.init_pair(2, curses.COLOR_CYAN, curses.COLOR_BLACK)
+        curses.init_pair(3, curses.COLOR_GREEN, curses.COLOR_BLACK)
+
+    def __end_cli(self):
+        self.stdscr.keypad(0)
+        curses.echo()
+        curses.nocbreak()
+        curses.endwin()
+
+    def exit(self) -> None:
+        self.__end_cli()
 
     def multi_select(self, config: SelectConfig) -> List[SelectOption]:
         # Initialize variables
@@ -158,6 +182,23 @@ class CLI:
         curses.curs_set(1)
         return selected_option
 
-
     def text(self, text: List[WinString]) -> None:
-        pass
+
+        while True:
+            self.stdscr.erase()
+            self.stdscr.refresh()
+
+            # Handle last key input
+            if self.pressed_key == self.KEY_ENTER:
+                break
+            if self.pressed_key == self.KEY_ESC:
+                break
+
+            # Draw the window
+            # Draw helper text
+            for txt in text:
+                self.stdscr.addstr(txt.start_y, txt.start_x,
+                                   txt.text, txt.color)
+
+            # wait for key input
+            self.pressed_key = self.stdscr.getch()
