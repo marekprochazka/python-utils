@@ -1,0 +1,19 @@
+[tool.poetry]
+name="pwu-cli"
+version="0.0.1"
+description="CLI module for Python Windows Utils"
+authors = ["Marek Prochazka <m.prochazka2002@gmail.com>"]
+license = "MIT"
+repository = "https://github.com/marekprochazka/python-windows-utils"
+packages = [
+    {include = "cli.py"}
+]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+windows-curses = "^2.3.0"
+
+
+[build-system]
+requires = ["poetry_core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
