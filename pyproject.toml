@@ -18,9 +18,9 @@ classifiers = [
 [tool.poetry.dependencies]
 python = "^3.9"
 cryptography = "^37.0.2"
-rust_toolkit = {file = "src/rust_toolkit/rust_lib/rust_toolkit-0.1.0-cp39-none-win_amd64.whl"}
+rust_toolkit = {file = "lib/rust_toolkit/rust_lib/rust_toolkit-0.1.0-cp39-none-win_amd64.whl"}
 windows-curses = "^2.3.0"
-pwu-cli = {path = "./src/cli", develop = true}
+pwu-cli = {path = "./lib/cli", develop = true}
 
 
 

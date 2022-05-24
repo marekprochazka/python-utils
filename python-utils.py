@@ -1,19 +1,19 @@
 import importlib.util
 import sys
-import curses
+import cli
 
 
 PROJECT_PATH = list(sys.argv)[1]
 
-# cli_spec = importlib.util.spec_from_file_location(
-#     "cli", f"{PROJECT_PATH}/src/cli/cli.py")
-# cli = importlib.util.module_from_spec(cli_spec)
-# cli_spec.loader.exec_module(cli)
 
-import cli
-
-# CLI COLORS
-
+def glob_import(module_name: str, file_name: str = None) -> object:
+    if not file_name:
+        file_name = module_name
+    spec = importlib.util.spec_from_file_location(
+        module_name, f"{PROJECT_PATH}\\src\\{module_name}\\{file_name}.py")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
 
 
 def menu_select(controller: cli.CLI) -> cli.SelectOption:
@@ -43,7 +43,6 @@ def menu_select(controller: cli.CLI) -> cli.SelectOption:
     return controller.select(conf)
 
 
-
 def main():
     controller = cli.CLI()
     choice = menu_select(controller)
@@ -51,22 +50,13 @@ def main():
     controller.exit()
 
     if choice == "1":
-        spec = importlib.util.spec_from_file_location(
-            "hasher", f"{PROJECT_PATH}\src\hasher\hasher.py")
-        hasher = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(hasher)
+        hasher = glob_import("hasher")
         hasher.hasher()
     elif choice == "2":
-        spec = importlib.util.spec_from_file_location(
-            "folder_admin", f"{PROJECT_PATH}\\src\\folder_admin\\folder_admin.py")
-        folder_admin = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(folder_admin)
+        folder_admin = glob_import("folder_admin")
         folder_admin.folder_admin(controller)
     elif choice == "DEV":
-        spec = importlib.util.spec_from_file_location(
-            "dev_test", f"{PROJECT_PATH}\\src\dev_test\dev_test_rust.py")
-        dev_test = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(dev_test)
+        dev_test = glob_import("dev_test", "dev_test_rust")
         dev_test.test(controller)
     else:
         print("Programm ended")
