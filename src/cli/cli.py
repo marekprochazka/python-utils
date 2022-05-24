@@ -157,3 +157,7 @@ class CLI:
         self.stdscr.refresh()
         curses.curs_set(1)
         return selected_option
+
+
+    def text(self, text: List[WinString]) -> None:
+        pass

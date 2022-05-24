@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "python-windows-utils"
+name = "python-widnows-utils"
 version = "0.0.1"
 description = "Set of python scripts to simplify your life while using Windows 10"
 authors = ["Marek Prochazka <m.prochazka2002@gmail.com>"]
@@ -13,11 +13,15 @@ classifiers = [
     "Programming Language :: Rust"
 ]
 
+
+
 [tool.poetry.dependencies]
 python = "^3.9"
 cryptography = "^37.0.2"
-rust_toolkit = {file = "rust_toolkit/rust_lib/rust_toolkit-0.1.0-cp39-none-win_amd64.whl"}
+rust_toolkit = {file = "src/rust_toolkit/rust_lib/rust_toolkit-0.1.0-cp39-none-win_amd64.whl"}
 windows-curses = "^2.3.0"
+pwu-cli = {path = "./src/cli", develop = true}
+
 
 
 [tool.poetry.dev-dependencies]

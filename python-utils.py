@@ -2,12 +2,15 @@ import importlib.util
 import sys
 import curses
 
+
 PROJECT_PATH = list(sys.argv)[1]
 
-cli_spec = importlib.util.spec_from_file_location(
-    "cli", f"{PROJECT_PATH}/cli/cli.py")
-cli = importlib.util.module_from_spec(cli_spec)
-cli_spec.loader.exec_module(cli)
+# cli_spec = importlib.util.spec_from_file_location(
+#     "cli", f"{PROJECT_PATH}/src/cli/cli.py")
+# cli = importlib.util.module_from_spec(cli_spec)
+# cli_spec.loader.exec_module(cli)
+
+import cli
 
 # CLI COLORS
 COLOR__WHITE = 1
@@ -63,21 +66,21 @@ def main(stdscr):
     if choice == "1":
         end_cli(stdscr)
         spec = importlib.util.spec_from_file_location(
-            "hasher", f"{PROJECT_PATH}\hasher\hasher.py")
+            "hasher", f"{PROJECT_PATH}\src\hasher\hasher.py")
         hasher = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(hasher)
         hasher.hasher()
     elif choice == "2":
-        end_cli(stdscr)
         spec = importlib.util.spec_from_file_location(
-            "folder_admin", f"{PROJECT_PATH}\\folder_admin\\folder_admin.py")
+            "folder_admin", f"{PROJECT_PATH}\\src\\folder_admin\\folder_admin.py")
         folder_admin = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(folder_admin)
-        folder_admin.folder_admin()
+        folder_admin.folder_admin(controller)
+        end_cli(stdscr)
     elif choice == "DEV":
         end_cli(stdscr)
         spec = importlib.util.spec_from_file_location(
-            "dev_test", f"{PROJECT_PATH}\dev_test\dev_test_rust.py")
+            "dev_test", f"{PROJECT_PATH}\\src\dev_test\dev_test_rust.py")
         dev_test = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(dev_test)
         dev_test.test()
