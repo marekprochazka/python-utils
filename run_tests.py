@@ -1,6 +1,6 @@
-from tests.test_folder_admin import TestFolderAdmin
+from tests.test_folder_admin import TestValidateConfigFile, TestRunFolderAdmin
+import unittest
 
-print('starting tests')
-tst = TestFolderAdmin()
-tst.test_normal_folder_structure()
-print('tests finished')
+
+if __name__ == '__main__':
+    unittest.main()

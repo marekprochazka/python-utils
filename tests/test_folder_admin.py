@@ -1,9 +1,12 @@
 from tests.base.base_test import BaseFileSystemTest
 from tests.base.structures import File, Directory
 import os
-from src.folder_admin import folder_admin
+from src.folder_admin.folder_admin import run_folder_admin, validate_config_file, ValidateConfigStatus, \
+    ValidateConfigErrorMessage
+import unittest
 
-class TestFolderAdmin(BaseFileSystemTest):
+
+class TestRunFolderAdmin(BaseFileSystemTest, unittest.TestCase):
     test_folder = "./tmp/test_folder"
 
     def test_normal_folder_structure(self):
@@ -53,11 +56,41 @@ class TestFolderAdmin(BaseFileSystemTest):
         )
         self.setup_test_folder()
 
-        current_path = os.path.abspath(os.getcwd())
-        os.chdir(self.test_folder)
-        print(f'CURRENT DIR {os.getcwd()}')
-        folder_admin.folder_admin()
-        os.chdir(current_path)
+        self.execute_in_test_folder(run_folder_admin)
+        current_state = self.get_test_folder_state()
+        self.clear_test_folder()
+        self.assertEqual(current_state, expected_state)
 
-        assert self.get_test_folder_state() == expected_state
+
+class TestValidateConfigFile(BaseFileSystemTest, unittest.TestCase):
+    test_folder = "./tmp/test_folder"
+
+    def test_config_file_does_not_exist(self):
+        self.setup_test_folder()
+        self.assertEqual(self.execute_in_test_folder(validate_config_file),
+                         ([ValidateConfigErrorMessage.DOES_NOT_EXIST], ValidateConfigStatus.DOES_NOT_EXIST))
+        self.clear_test_folder()
+
+    def test_config_valid(self):
+        self.files = [
+            File("FolderAdministratorConfig.json",
+                 '''
+            [
+                {
+                    "dirname": "audio",
+                    "extensions": ["mp3"]
+                },
+                {
+                    "dirname": "video",
+                    "extensions": ["mp4"]
+                },
+                {
+                    "dirname": "documents",
+                    "extensions": ["txt"]
+                }
+            ]
+            ''')
+        ]
+        self.setup_test_folder()
+        self.assertEqual(self.execute_in_test_folder(validate_config_file), ([], ValidateConfigStatus.VALID))
         self.clear_test_folder()

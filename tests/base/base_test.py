@@ -1,5 +1,5 @@
 import os
-from typing import List
+from typing import List, Callable, Any
 from abc import ABC, abstractmethod
 from .structures import File, Directory
 import shutil
@@ -61,6 +61,13 @@ class BaseFileSystemTest(BaseTest):
                         directory.files.append(File(file, f.read()))
 
         return test_folder_state
+
+    def execute_in_test_folder(self, command: Callable) -> Any:
+        current_path = os.path.abspath(os.getcwd())
+        os.chdir(self.test_folder)
+        output = command()
+        os.chdir(current_path)
+        return output
 
     def __create_file(self, file: File):
         with open(f"{self.test_folder}/{file.name}", "w") as f:
