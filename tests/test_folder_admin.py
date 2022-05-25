@@ -92,5 +92,5 @@ class TestValidateConfigFile(BaseFileSystemTest, unittest.TestCase):
             ''')
         ]
         self.setup_test_folder()
-        self.assertNotEqual(self.execute_in_test_folder(validate_config_file), ([], ValidateConfigStatus.VALID))
+        self.assertEqual(self.execute_in_test_folder(validate_config_file), ([], ValidateConfigStatus.VALID))
         self.clear_test_folder()
