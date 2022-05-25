@@ -12,23 +12,27 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix:
-        python-version: [3.9]
+        python-version: [ 3.9 ]
 
     steps:
-        - uses: actions/checkout@v2
-        - name: Set up Python ${{ matrix.python-version }}
-          uses: actions/setup-python@v3
-          with:
-            python-version: ${{ matrix.python-version }}
-        - name: Set up venv
-          run: |
-              python -m venv venv
-              .\venv\Scripts\activate
-        - name: Install poetry
-          run: | 
-            pip install --upgrade pip
-            pip install poetry
-        - name: Install dependencies
-          run: poetry install
-        - name: Execute tests
-          run: python run_tests.py
+      - uses: actions/checkout@v2
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v3
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Set up venv
+        run: |
+          python -m venv venv
+      - name: Install poetry
+        run: |
+          .\venv\Scripts\activate
+          pip install --upgrade pip
+          pip install poetry
+      - name: Install dependencies
+        run: |
+          .\venv\Scripts\activate
+          poetry install
+      - name: Execute tests
+        run: |
+          .\venv\Scripts\activate
+          python run_tests.py
