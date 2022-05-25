@@ -2,6 +2,8 @@
 venv/
 poetry.lock
 .vscode/
+tmp/
+.idea/
 #official python gitignore
 # Byte-compiled / optimized / DLL files
 __pycache__/

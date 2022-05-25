@@ -54,10 +54,10 @@ def main():
         hasher.hasher()
     elif choice == "2":
         folder_admin = glob_import("folder_admin")
-        folder_admin.folder_admin(controller)
+        folder_admin.folder_admin()
     elif choice == "DEV":
         dev_test = glob_import("dev_test", "dev_test_rust")
-        dev_test.test(controller)
+        dev_test.test()
     else:
         print("Programm ended")
 

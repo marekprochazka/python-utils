@@ -2,7 +2,7 @@ from rust_toolkit import Hello
 import cli
 
 
-def test(controller):
+def test():
     text = [
         cli.WinString("python-utils version 0.0.1", 1, 0, 0),
         cli.WinString("Copyright (c) 2022 Marek Prochazka", 1, 0, 1),
