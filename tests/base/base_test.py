@@ -1,7 +1,7 @@
 import os
 from typing import List, Callable, Any, Optional
-from abc import ABC, abstractmethod
-from .structures import File, Directory
+from abc import ABC
+from tests.folder_admin.structures import File, Directory
 import shutil
 
 
