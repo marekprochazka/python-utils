@@ -1,8 +1,9 @@
 import os
-from typing import List, Callable, Any
+from typing import List, Callable, Any, Optional
 from abc import ABC, abstractmethod
 from .structures import File, Directory
 import shutil
+
 
 class BaseTest(ABC):
     key_inputs: List[str] = None
@@ -13,7 +14,13 @@ class BaseFileSystemTest(BaseTest):
     directories: List[Directory] = None
     test_folder: str = None
 
-    def setup_test_folder(self):
+    def setup_test_folder(self, files: Optional[List[File]] = None,
+                          directories: Optional[List[Directory]] = None):
+        if not files:
+            files = self.files
+        if not directories:
+            directories = self.directories
+
         # Check if test folder is defined
         if not self.test_folder:
             raise NotImplementedError("test_folder is not defined in class {}".format(self.__class__.__name__))
@@ -27,12 +34,12 @@ class BaseFileSystemTest(BaseTest):
             os.makedirs(self.test_folder)
 
         # Create files and directories
-        if self.files:
-            for file in self.files:
+        if files:
+            for file in files:
                 self.__create_file(file)
 
-        if self.directories:
-            for directory in self.directories:
+        if directories:
+            for directory in directories:
                 self.__create_directory(directory)
 
     def clear_test_folder(self):
@@ -75,5 +82,6 @@ class BaseFileSystemTest(BaseTest):
 
     def __create_directory(self, directory: Directory):
         os.makedirs(f"{self.test_folder}/{directory.name}")
-        for file in directory.files:
-            self.__create_file(file)
+        if directory.files:
+            for file in directory.files:
+                self.__create_file(file)

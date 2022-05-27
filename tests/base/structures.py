@@ -6,14 +6,23 @@ class File:
         self.name = name
         self.content = content
 
+    def __str__(self):
+        return self.name
+
 
 class Directory:
     def __init__(self, name: str = None, files: List[File] = None, subdirectories: List['Directory'] = None):
-        self.name = name
-        self.files = files
-        self.subdirectories = subdirectories
+        self.name = name if name else "unnamed"
+        self.files = files if files else []
+        self.subdirectories = subdirectories if subdirectories else []
+
+    def __str__(self):
+        return f'{self.name} -> {[str(file) for file in self.files]}; {[str(subdir) for subdir in self.subdirectories]}'
 
     def __eq__(self, other) -> bool:
+        if not isinstance(other, Directory):
+            return False
+
         # Check if name is equal
         output = self.name == other.name
 

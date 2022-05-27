@@ -2,8 +2,9 @@ from rust_toolkit import FolderAdministrator
 from enum import Enum
 import os
 import json
-from typing import Optional, List
+from typing import Optional, List, Tuple
 import cli
+
 
 class ValidateConfigStatus(Enum):
     VALID = 0
@@ -22,12 +23,24 @@ class ValidateConfigErrorMessage(Enum):
     INVALID_EXTENSIONS = ("Extensions should be defined without 'dot' as the first character.",)
 
 
+class Extensions(Enum):
+    AUDIO = ["mp3", "wav", "flac", "ogg", "aac", "m4a"]
+    VIDEO = ["mp4", "mkv", "avi", "mov", "wmv", "flv", "mpg", "mpeg"]
+    DOCUMENTS = ["txt", "pdf", "doc", "docx", "odt", "ods", "odp", "xls", "xlsx", "csv", "ppt", "pptx"]
+    COMPRESSED = ["zip", "rar", "7z", "tar", "gz", "bz2", "xz", "z", "lz", "lzma", "lzo", "lz4", "lzop"]
+    IMAGES = ["jpg", "jpeg", "png", "gif", "bmp", "tiff", "tif", "psd", "svg", "webp", "heif", "heic"]
+    EXECUTABLES = ["exe"]
+    CODES = ["py", "c", "h", "cpp", "java", "js", "go", "php", "html", "css", "scss", "sass", "less", "json", "xml",
+             "yml", "yaml", "toml", "md", "rst", "sh", "bat", "cmd", "rs", "r", "swift", "ts", "m", "mm", "h", "hpp",
+             "hh", "hxx", "hpp", "hxx", "cs", "csx", "asm"]
+
+
 def folder_admin():
     err_msg, config_file_state = validate_config_file()
     run_folder_admin()
 
 
-def validate_config_file() -> (List[ValidateConfigErrorMessage], ValidateConfigStatus):
+def validate_config_file() -> Tuple[List[ValidateConfigErrorMessage], ValidateConfigStatus]:
     err_msg = []
     status: ValidateConfigStatus = ValidateConfigStatus.VALID
 
@@ -82,6 +95,15 @@ def validate_config_file() -> (List[ValidateConfigErrorMessage], ValidateConfigS
                 break
 
     return err_msg, status
+
+
+def create_config_file(extensions: List[Extensions]) -> None:
+    config_file_content = []
+    for extension in extensions:
+        config_file_content.append({"dirname": extension.name.lower(), "extensions": list(extension.value)})
+
+    with open("FolderAdministratorConfig.json", "w") as config_file:
+        json.dump(config_file_content, config_file, indent=4)
 
 
 def run_folder_admin(verbose: bool = False):
