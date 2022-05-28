@@ -57,6 +57,10 @@ $danger: $theme-danger-color;
 $warning: $theme-warning-color;
 $info: $theme-info-color;
 
+/* Bootstrap components edits  */
+$accordion-border-color: $theme-color-primary;
+
+
 /*************************** Import Bootstrap  *****************************/
 @import "bootstrap/scss/bootstrap.scss";
 
