@@ -21,14 +21,16 @@ impl SubdirConf {
 pub struct FolderAdministrator {
     config: Vec<SubdirConf>,
     verbose: bool,
+    file_ignore_list: Vec<String>,
 }
 
 #[pymethods]
 impl FolderAdministrator {
     #[new]
     fn load(verbose: bool) -> PyResult<Self> {
-        let mut fadm = FolderAdministrator { config: Vec::new(),verbose: verbose};
+        let mut fadm = FolderAdministrator { config: Vec::new(), verbose: verbose, file_ignore_list: Vec::new() };
         fadm.load_config()?;
+        fadm.file_ignore_list.push(String::from("FolderAdministratorConfig.json"));
         Ok(fadm)
     }
 
@@ -74,6 +76,12 @@ impl FolderAdministrator {
         let files = fs::read_dir("./").unwrap();
         for file in files {
             let file = file.unwrap();
+            if self.file_ignore_list.contains(&file.file_name().to_str().unwrap().to_string())  {
+                if self.verbose {
+                    println!("Skipping {}. Found in 'file_ignore_list'.", file.file_name().to_str().unwrap());
+                }
+                continue;
+            }
             let path = file.path();
             if path.is_file() {
                 let extension = path

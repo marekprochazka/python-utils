@@ -94,6 +94,30 @@ class TestRunFolderAdmin(BaseFileSystemTest, unittest.TestCase):
                          Directory(name="test_folder", files=files_with_empty_config, subdirectories=[]))
         self.clear_test_folder()
 
+    def test_dont_move_config_file(self):
+        file_with_edited_config = self.files.copy()
+        file_with_edited_config[-1] = File("FolderAdministratorConfig.json", '''
+            [
+                {
+                    "dirname": "audio",
+                    "extensions": ["mp3"]
+                },
+                {
+                    "dirname": "video",
+                    "extensions": ["mp4"]
+                },
+                {
+                    "dirname": "documents",
+                    "extensions": ["txt", "json"]
+                }
+            ]
+            ''')
+        self.setup_test_folder(files=file_with_edited_config)
+        self.execute_in_test_folder(run_folder_admin)
+        self.assertEqual(self.get_test_folder_state(),
+                         self.expected_state)
+        self.clear_test_folder()
+
 
 class TestValidateConfigFile(BaseFileSystemTest, unittest.TestCase):
     test_folder = "./tmp/test_folder"
