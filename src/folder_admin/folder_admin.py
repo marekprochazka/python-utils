@@ -13,14 +13,14 @@ class ValidateConfigStatus(Enum):
 
 
 class ValidateConfigErrorMessage(Enum):
-    DOES_NOT_EXIST = ("Config file does not exist.",)
-    INVALID_JSON_FORMAT = ("Config file should be a in a valid JSON format.",)
-    NOT_A_LIST = ("Config file should be a list.",)
-    NOT_A_DICT = ("Values of config list should be valid dictionaries.",)
-    MISSING_DIRNAME = ("Every config value should have 'dirname' key.",)
-    MISSING_EXTENSIONS = (
-        "Every config value should have 'extensions' key which is list of file extensions without 'dot' ('.')'",)
-    INVALID_EXTENSIONS = ("Extensions should be defined without 'dot' as the first character.",)
+    DOES_NOT_EXIST = "Config file does not exist."
+    INVALID_JSON_FORMAT = "Config file should be a in a valid JSON format."
+    NOT_A_LIST = "Config file should be a list."
+    NOT_A_DICT = "Values of config list should be valid dictionaries."
+    MISSING_DIRNAME = "Every config value should have 'dirname' key."
+    MISSING_EXTENSIONS = \
+        "Every config value should have 'extensions' key which is list of file extensions without 'dot' ('.')'"
+    INVALID_EXTENSIONS = "Extensions should be defined without 'dot' as the first character."
 
 
 class Extensions(Enum):
@@ -37,7 +37,31 @@ class Extensions(Enum):
 
 def folder_admin():
     err_msg, config_file_state = validate_config_file()
-    run_folder_admin()
+    if config_file_state == ValidateConfigStatus.DOES_NOT_EXIST:
+        create_new = cli.CliUtils.yes_no(question=[cli.WinString(err_msg[0].value, cli.COLOR__WHITE, 0, 0),
+                                                   cli.WinString("Do you want to create new config file?",
+                                                                 cli.COLOR__WHITE, 0,
+                                                                 1)], )
+        if create_new:
+            extensions = select_config_folder_types()
+            create_config_file(extensions)
+        else:
+            return
+    elif config_file_state == ValidateConfigStatus.WRONG_STRUCTURE:
+        question = [cli.WinString("Config file has invalid structure. These errors occurred:", cli.COLOR__WHITE, 0,
+                                  0), ] + \
+                   [cli.WinString(err_msg[i].value, cli.COLOR__RED, 0, i + 1) for i in range(len(err_msg))] + \
+                   [cli.WinString("Do you want to create new config file or fix it by yourself?", cli.COLOR__WHITE, 0,
+                                  len(err_msg) + 1)]
+        rewrite_config = cli.CliUtils.yes_no(question=question, yes_string="Create new config file",
+                                             no_string="I'll fix it by myself")
+        if rewrite_config:
+            extensions = select_config_folder_types()
+            create_config_file(extensions)
+        else:
+            return
+
+    run_folder_admin(verbose=True)
 
 
 def validate_config_file() -> Tuple[List[ValidateConfigErrorMessage], ValidateConfigStatus]:
@@ -95,6 +119,28 @@ def validate_config_file() -> Tuple[List[ValidateConfigErrorMessage], ValidateCo
                 break
 
     return err_msg, status
+
+
+def select_config_folder_types() -> List[Extensions]:
+    controller = cli.CLI()
+    options = [cli.SelectOption(f'{str(extension.name).lower()}:({",".join(extension.value[:5])},...)', extension) for
+               extension in Extensions]
+    helper_text = [
+        cli.WinString("Select types you want to organize in your folder:", cli.COLOR__WHITE, 0, 0),
+        cli.WinString("Press 'space' to add/remove selection and 'enter' to confirm your selection:", cli.COLOR__WHITE,
+                      0, 1),
+    ]
+    config = cli.SelectConfig(
+        options=options,
+        helper_text=helper_text,
+        default_color=cli.COLOR__WHITE,
+        highlighted_color=cli.COLOR__CYAN,
+        start_x=0,
+        start_y=2,
+    )
+    extensions = [option.value for option in controller.multi_select(config)]
+    controller.exit()
+    return extensions
 
 
 def create_config_file(extensions: List[Extensions]) -> None:

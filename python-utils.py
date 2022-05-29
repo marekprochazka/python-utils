@@ -25,7 +25,7 @@ def menu_select(controller: cli.CLI) -> cli.SelectOption:
     helper_text = [
         cli.WinString("python-utils version 0.0.1", cli.COLOR__WHITE, 0, 0),
         cli.WinString("Copyright (c) 2022 Marek Prochazka",
-                      cli.COLOR__GREEN, 0, 1),
+                      cli.COLOR__WHITE, 0, 1),
         cli.WinString("Licence: MIT", cli.COLOR__WHITE, 0, 2),
         cli.WinString("Select option:", cli.COLOR__WHITE, 0, 3),
         cli.WinString(
@@ -46,7 +46,7 @@ def menu_select(controller: cli.CLI) -> cli.SelectOption:
 def main():
     controller = cli.CLI()
     choice = menu_select(controller)
-    choice = choice.identifier if choice != None else "None"
+    choice = choice.value if choice != None else "None"
     controller.exit()
 
     if choice == "1":
@@ -59,7 +59,7 @@ def main():
         dev_test = glob_import("dev_test", "dev_test_rust")
         dev_test.test()
     else:
-        print("Programm ended")
+        print("Programme ended")
 
 
 if __name__ == "__main__":

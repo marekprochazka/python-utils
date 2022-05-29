@@ -106,6 +106,7 @@ impl FolderAdministrator {
                 }
             }
         }
+        println!("Done!");
     }
 
     fn print_config(&self) {
