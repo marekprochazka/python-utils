@@ -23,17 +23,6 @@ echo --------------------------INSTALLING DEPENDENCIES--------------------------
 
 poetry install --no-dev
 
-@echo off
-echo --------------------------CREATING SYMLINK IN C:\pwu--------------------------------------
-@echo on
-
-mkdir C:\pwu
-
-mklink C:\pwu\pwu.bat %CD%\execute.bat
-
-@echo off
-echo --------------------------TO BE ABLE TO USE pwu globaly add C:\pwu to your PATH variable---
-@echo on
 
 call deactivate
 
