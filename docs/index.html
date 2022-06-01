@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>PWU - Python Windows Admin</title>
+    <title>PWU - Python Windows Utils</title>
 
     <!-- Meta -->
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Bootstrap Documentation Template For Software Developers">
-    <meta name="author" content="Xiaoying Riley at 3rd Wave Media">
+    <meta name="description" content="Documentation of Python Windows Utils app">
+    <meta name="author" content="Xiaoying Riley at 3rd Wave Media & Marek Prochazka">
     <link rel="shortcut icon" href="favicon.ico">
 
     <!-- Google Font -->
@@ -57,6 +57,8 @@
         </div>
     </div>
 </div><!--//page-header-->
+
+<!-- Content -->
 <div class="page-content">
     <div class="container">
         <div class="docs-overview py-5">
@@ -76,12 +78,9 @@
                          aria-labelledby="introductionHeading"
                          data-bs-parent="#accordionIntroduction">
                         <div class="accordion-body">
-                            <strong>This is the first item's accordion body.</strong> It is shown by default, until the
-                            collapse plugin adds the appropriate classes that we use to style each element. These
-                            classes control the overall appearance, as well as the showing and hiding via CSS
-                            transitions. You can modify any of this with custom CSS or overriding our default variables.
-                            It's also worth noting that just about any HTML can go within the
-                            <code>.accordion-body</code>, though the transition does limit overflow.
+                            <strong>PWU</strong> is a set of programs powered by python that will help
+                            you automate tasks such as sorting files in folder, safely encrypting your files,
+                            initializing different types of projects, and so on.
                         </div>
                     </div>
                 </div>
@@ -102,12 +101,23 @@
                          aria-labelledby="installationHeading"
                          data-bs-parent="#accordionInstallation">
                         <div class="accordion-body">
-                            <strong>This is the first item's accordion body.</strong> It is shown by default, until the
-                            collapse plugin adds the appropriate classes that we use to style each element. These
-                            classes control the overall appearance, as well as the showing and hiding via CSS
-                            transitions. You can modify any of this with custom CSS or overriding our default variables.
-                            It's also worth noting that just about any HTML can go within the
-                            <code>.accordion-body</code>, though the transition does limit overflow.
+                            <ul>
+                                <li class="py-1"><strong>Requirements:</strong> Python 3.9, pip</li>
+                                <li class="py-1"><strong><a href="https://github.com/marekprochazka/python-windows-utils/releases">Download</a>
+                                    the latest release of PWU or <a
+                                            href="https://github.com/marekprochazka/python-windows-utils">clone</a>
+                                    the repository.</strong>
+                                </li>
+                                <li class="py-1">
+                                    Execute <strong>init.bat</strong> in the root of the project.
+                                </li>
+                                <li class="py-1">
+                                    Add <strong>/bin</strong> folder to your PATH variable.
+                                </li>
+                                <li class="py-1">
+                                    Execute programme by typing <strong>pwu</strong> in the command line.
+                                </li>
+                            </ul>
                         </div>
                     </div>
                 </div>
@@ -128,12 +138,10 @@
                          aria-labelledby="runningHeading"
                          data-bs-parent="#accordionRunning">
                         <div class="accordion-body">
-                            <strong>This is the first item's accordion body.</strong> It is shown by default, until the
-                            collapse plugin adds the appropriate classes that we use to style each element. These
-                            classes control the overall appearance, as well as the showing and hiding via CSS
-                            transitions. You can modify any of this with custom CSS or overriding our default variables.
-                            It's also worth noting that just about any HTML can go within the
-                            <code>.accordion-body</code>, though the transition does limit overflow.
+                            At the current moment the only way how to execute PWU is by typing pwu in
+                            the command line and then choosing the specific utility by use of the
+                            CLI UI. In future will be added a way to execute specific utils with specific
+                            arguments by use of a <strong>flags</strong>.
                         </div>
                     </div>
                 </div>
@@ -154,12 +162,11 @@
                          aria-labelledby="featuresHeading"
                          data-bs-parent="#accordionFeatures">
                         <div class="accordion-body">
-                            <strong>This is the first item's accordion body.</strong> It is shown by default, until the
-                            collapse plugin adds the appropriate classes that we use to style each element. These
-                            classes control the overall appearance, as well as the showing and hiding via CSS
-                            transitions. You can modify any of this with custom CSS or overriding our default variables.
-                            It's also worth noting that just about any HTML can go within the
-                            <code>.accordion-body</code>, though the transition does limit overflow.
+                            <ul>
+                                <li class="py-1"><a href="features/encryptor.html">File Encryptor and Decryptor</a></li>
+                                <li class="py-1"><a href="features/folder_admin.html">Folder administrator</a></li>
+                                <li class="py-1"><a href=""></a></li>
+                            </ul>
                         </div>
                     </div>
                 </div>
@@ -168,21 +175,22 @@
     </div><!--//container-->
 </div><!--//page-content-->
 
+<!--FOOTER-->
 <section class="cta-section text-center py-5 theme-bg-dark position-relative">
     <div class="theme-bg-shapes-right"></div>
     <div class="theme-bg-shapes-left"></div>
     <div class="container">
-<!--        <h3 class="mb-2 text-white mb-3">Launch Your Software Project Like A Pro</h3>-->
-<!--        <div class="section-intro text-white mb-3 single-col-max mx-auto">Want to launch your software project and start-->
-<!--            getting traction from your target users? Check out our premium <a class="text-white"-->
-<!--                                                                              href="https://themes.3rdwavemedia.com/bootstrap-templates/startup/coderpro-bootstrap-5-startup-template-for-software-projects/">Bootstrap-->
-<!--                5 startup template CoderPro</a>! It has everything you need to promote your product.-->
-<!--        </div>-->
-<!--        <div class="pt-3 text-center">-->
-<!--            <a class="btn btn-light"-->
-<!--               href="https://themes.3rdwavemedia.com/bootstrap-templates/startup/coderpro-bootstrap-5-startup-template-for-software-projects/">Get-->
-<!--                CoderPro<i class="fas fa-arrow-alt-circle-right ml-2"></i></a>-->
-<!--        </div>-->
+        <!--        <h3 class="mb-2 text-white mb-3">Launch Your Software Project Like A Pro</h3>-->
+        <!--        <div class="section-intro text-white mb-3 single-col-max mx-auto">Want to launch your software project and start-->
+        <!--            getting traction from your target users? Check out our premium <a class="text-white"-->
+        <!--                                                                              href="https://themes.3rdwavemedia.com/bootstrap-templates/startup/coderpro-bootstrap-5-startup-template-for-software-projects/">Bootstrap-->
+        <!--                5 startup template CoderPro</a>! It has everything you need to promote your product.-->
+        <!--        </div>-->
+        <!--        <div class="pt-3 text-center">-->
+        <!--            <a class="btn btn-light"-->
+        <!--               href="https://themes.3rdwavemedia.com/bootstrap-templates/startup/coderpro-bootstrap-5-startup-template-for-software-projects/">Get-->
+        <!--                CoderPro<i class="fas fa-arrow-alt-circle-right ml-2"></i></a>-->
+        <!--        </div>-->
     </div>
 </section><!--//cta-section-->
 
@@ -191,7 +199,8 @@
     <div class="footer-bottom text-center py-5">
 
         <ul class="social-list list-unstyled pb-4 mb-0">
-            <li class="list-inline-item"><a href="https://github.com/marekprochazka/python-windows-utils"><i class="fab fa-github fa-fw"></i></a></li>
+            <li class="list-inline-item"><a href="https://github.com/marekprochazka/python-windows-utils"><i
+                    class="fab fa-github fa-fw"></i></a></li>
         </ul><!--//social-list-->
 
         <!--/* This template is free as long as you keep the footer attribution link. If you'd like to use the template without the attribution link, you can buy the commercial license via our website: themes.3rdwavemedia.com Thank you for your support. :) */-->
