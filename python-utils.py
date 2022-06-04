@@ -20,7 +20,6 @@ def menu_select(controller: cli.CLI) -> cli.SelectOption:
     options = [
         cli.SelectOption("File encryptor/decryptor", "1"),
         cli.SelectOption("Folder administrator", "2"),
-        cli.SelectOption("DEV dev test", "DEV"),
     ]
     helper_text = [
         cli.WinString("python-utils version 0.0.1", cli.COLOR__WHITE, 0, 0),
@@ -55,9 +54,6 @@ def main():
     elif choice == "2":
         folder_admin = glob_import("folder_admin")
         folder_admin.folder_admin()
-    elif choice == "DEV":
-        dev_test = glob_import("dev_test", "dev_test_rust")
-        dev_test.test()
     else:
         print("Programme ended")
 
