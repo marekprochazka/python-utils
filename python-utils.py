@@ -2,11 +2,10 @@ import importlib.util
 import sys
 import cli
 
-
 PROJECT_PATH = list(sys.argv)[1]
 
 
-def glob_import(module_name: str, file_name: str = None) -> object:
+def absolute_import(module_name: str, file_name: str = None) -> object:
     if not file_name:
         file_name = module_name
     spec = importlib.util.spec_from_file_location(
@@ -18,11 +17,12 @@ def glob_import(module_name: str, file_name: str = None) -> object:
 
 def menu_select(controller: cli.CLI) -> cli.SelectOption:
     options = [
+        cli.SelectOption("Help", "0"),
         cli.SelectOption("File encryptor/decryptor", "1"),
         cli.SelectOption("Folder administrator", "2"),
     ]
     helper_text = [
-        cli.WinString("python-utils version 0.0.1", cli.COLOR__WHITE, 0, 0),
+        cli.WinString("python-window-utils version 0.1.0", cli.COLOR__WHITE, 0, 0),
         cli.WinString("Copyright (c) 2022 Marek Prochazka",
                       cli.COLOR__WHITE, 0, 1),
         cli.WinString("Licence: MIT", cli.COLOR__WHITE, 0, 2),
@@ -49,11 +49,15 @@ def main():
     controller.exit()
 
     if choice == "1":
-        hasher = glob_import("hasher")
+        hasher = absolute_import("hasher")
         hasher.hasher()
     elif choice == "2":
-        folder_admin = glob_import("folder_admin")
+        folder_admin = absolute_import("folder_admin")
         folder_admin.folder_admin()
+    elif choice == "0":
+        help_module = absolute_import("help")
+        help_module.run_help()
+
     else:
         print("Programme ended")
 
