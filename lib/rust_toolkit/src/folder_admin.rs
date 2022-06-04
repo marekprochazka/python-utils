@@ -109,7 +109,8 @@ impl FolderAdministrator {
                 let extension = unwrap_or_continue!(path.clone().extension())
                     .to_os_string()
                     .into_string()
-                    .unwrap();
+                    .unwrap()
+                    .to_lowercase();
                 for subdir in &self.config {
                     if subdir.extensions.contains(&extension) {
                         let dirname = subdir.dirname.clone();

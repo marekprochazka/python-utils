@@ -28,8 +28,7 @@ class Extensions(Enum):
     VIDEO = ["mp4", "mkv", "avi", "mov", "wmv", "flv", "mpg", "mpeg"]
     DOCUMENTS = ["txt", "pdf", "doc", "docx", "odt", "ods", "odp", "xls", "xlsx", "csv", "ppt", "pptx"]
     COMPRESSED = ["zip", "rar", "7z", "tar", "gz", "bz2", "xz", "z", "lz", "lzma", "lzo", "lz4", "lzop", "tgz"]
-    IMAGES = ["jpg", "jpeg", "png", "gif", "bmp", "tiff", "tif", "psd", "svg", "webp", "heif", "heic", "raw", "HEIC",
-              "JPEG", "jfif"]
+    IMAGES = ["jpg", "jpeg", "png", "gif", "bmp", "tiff", "tif", "psd", "svg", "webp", "heif", "heic", "raw", "jfif"]
     EXECUTABLES = ["exe", "msi", "apk", "deb", "rpm", "dmg", "pkg", "ipa", "appx", "app", "com", "cmd"]
     CODES = ["py", "c", "h", "cpp", "java", "js", "go", "php", "html", "css", "scss", "sass", "less", "json", "xml",
              "yml", "yaml", "toml", "md", "rst", "sh", "bat", "cmd", "rs", "r", "swift", "ts", "m", "mm", "h", "hpp",
