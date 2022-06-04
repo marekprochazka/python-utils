@@ -2,6 +2,17 @@ use pyo3::prelude::*;
 use std::fs;
 use std::path::Path;
 
+macro_rules! unwrap_or_continue {
+    ($opt: expr) => {
+        match $opt {
+            Some(v) => v,
+            None => {
+                continue;
+            }
+        }
+    };
+}
+
 #[derive(Debug)]
 struct SubdirConf {
     dirname: String,
@@ -28,9 +39,14 @@ pub struct FolderAdministrator {
 impl FolderAdministrator {
     #[new]
     fn load(verbose: bool) -> PyResult<Self> {
-        let mut fadm = FolderAdministrator { config: Vec::new(), verbose: verbose, file_ignore_list: Vec::new() };
+        let mut fadm = FolderAdministrator {
+            config: Vec::new(),
+            verbose: verbose,
+            file_ignore_list: Vec::new(),
+        };
         fadm.load_config()?;
-        fadm.file_ignore_list.push(String::from("FolderAdministratorConfig.json"));
+        fadm.file_ignore_list
+            .push(String::from("FolderAdministratorConfig.json"));
         Ok(fadm)
     }
 
@@ -76,18 +92,21 @@ impl FolderAdministrator {
         let files = fs::read_dir("./").unwrap();
         for file in files {
             let file = file.unwrap();
-            if self.file_ignore_list.contains(&file.file_name().to_str().unwrap().to_string())  {
+            if self
+                .file_ignore_list
+                .contains(&file.file_name().to_str().unwrap().to_string())
+            {
                 if self.verbose {
-                    println!("Skipping {}. Found in 'file_ignore_list'.", file.file_name().to_str().unwrap());
+                    println!(
+                        "Skipping {}. Found in 'file_ignore_list'.",
+                        file.file_name().to_str().unwrap()
+                    );
                 }
                 continue;
             }
             let path = file.path();
             if path.is_file() {
-                let extension = path
-                    .clone()
-                    .extension()
-                    .unwrap()
+                let extension = unwrap_or_continue!(path.clone().extension())
                     .to_os_string()
                     .into_string()
                     .unwrap();
@@ -114,7 +133,9 @@ impl FolderAdministrator {
                 }
             }
         }
-        println!("Done!");
+        if self.verbose {
+            println!("Soring finished!");
+        }
     }
 
     fn print_config(&self) {

@@ -6,6 +6,7 @@ from src.folder_admin.folder_admin import run_folder_admin, validate_config_file
 import unittest
 import json
 from typing import List, Tuple
+from copy import deepcopy
 
 
 class TestRunFolderAdmin(BaseFileSystemTest, unittest.TestCase):
@@ -118,6 +119,16 @@ class TestRunFolderAdmin(BaseFileSystemTest, unittest.TestCase):
                          self.expected_state)
         self.clear_test_folder()
 
+    def test_with_files_without_extensions(self):
+        files_with_added_no_extension = self.files.copy()
+        files_with_added_no_extension.append(File("noextension", "file4 content"))
+        updated_expectation = deepcopy(self.expected_state)
+        updated_expectation.files.append(File("noextension", "file4 content"))
+        self.setup_test_folder(files=files_with_added_no_extension)
+        self.execute_in_test_folder(run_folder_admin)
+        self.assertEqual(self.get_test_folder_state(), updated_expectation)
+        self.clear_test_folder()
+
 
 class TestValidateConfigFile(BaseFileSystemTest, unittest.TestCase):
     test_folder = "./tmp/test_folder"
@@ -182,23 +193,23 @@ class TestCreateConfigFile(BaseFileSystemTest, unittest.TestCase):
 
     extensions = [Extensions.CODES, Extensions.DOCUMENTS, Extensions.VIDEO, Extensions.AUDIO]
     expected_config_file = [
-            {
-                "dirname": "codes",
-                "extensions": Extensions.CODES.value,
-            },
-            {
-                "dirname": "documents",
-                "extensions": Extensions.DOCUMENTS.value,
-            },
-            {
-                "dirname": "video",
-                "extensions": Extensions.VIDEO.value,
-            },
-            {
-                "dirname": "audio",
-                "extensions": Extensions.AUDIO.value,
-            }
-        ]
+        {
+            "dirname": "codes",
+            "extensions": Extensions.CODES.value,
+        },
+        {
+            "dirname": "documents",
+            "extensions": Extensions.DOCUMENTS.value,
+        },
+        {
+            "dirname": "video",
+            "extensions": Extensions.VIDEO.value,
+        },
+        {
+            "dirname": "audio",
+            "extensions": Extensions.AUDIO.value,
+        }
+    ]
 
     def __read_config_file(self) -> List[dict]:
         def fn() -> List[dict]:
