@@ -1,3 +1,5 @@
+docs/
+
 .path
 venv/
 poetry.lock
