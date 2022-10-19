@@ -7,12 +7,14 @@ from enum import Enum
 class OptionTypes(Enum):
     ENCRYPTOR = 1
     FOLDER_ADMIN = 2
+    GO_BACK = 3
     EXIT = 0
 
 
 OPTIONS = [
     cli.SelectOption("Encryptor", OptionTypes.ENCRYPTOR),
     cli.SelectOption("Folder Admin", OptionTypes.FOLDER_ADMIN),
+    cli.SelectOption("Go back", OptionTypes.GO_BACK),
     cli.SelectOption("Exit", OptionTypes.EXIT),
 ]
 
@@ -21,7 +23,7 @@ ENCRYPTOR_HELP_TEXT = [
     cli.WinString("TODO", cli.COLOR__RED, 0, 1),
 ]
 
-FOLDER_ADMIN_HELO_TEXT = [
+FOLDER_ADMIN_HELP_TEXT = [
     cli.WinString("Folder admin help:", cli.COLOR__WHITE, 0, 0),
     cli.WinString("TODO", cli.COLOR__RED, 0, 1),
 ]
@@ -69,12 +71,14 @@ def run_help():
     while True:
         choice = select_option()
         if choice == OptionTypes.EXIT:
-            break
+            return False
+        elif choice == OptionTypes.GO_BACK:
+            return True
         elif choice == OptionTypes.ENCRYPTOR:
             if show_help(ENCRYPTOR_HELP_TEXT):
                 continue
-            break
+            return False
         elif choice == OptionTypes.FOLDER_ADMIN:
-            if show_help(FOLDER_ADMIN_HELO_TEXT):
-                continue
+            if show_help(FOLDER_ADMIN_HELP_TEXT):
+                return False
             break

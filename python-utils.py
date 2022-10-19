@@ -43,23 +43,29 @@ def menu_select(controller: cli.CLI) -> cli.SelectOption:
 
 
 def main():
-    controller = cli.CLI()
-    choice = menu_select(controller)
-    choice = choice.value if choice != None else "None"
-    controller.exit()
+    while True:
+        controller = cli.CLI()
+        choice = menu_select(controller)
+        choice = choice.value if choice != None else "None"
+        controller.exit()
 
-    if choice == "1":
-        hasher = absolute_import("hasher")
-        hasher.hasher()
-    elif choice == "2":
-        folder_admin = absolute_import("folder_admin")
-        folder_admin.folder_admin()
-    elif choice == "0":
-        help_module = absolute_import("help")
-        help_module.run_help()
+        if choice == "1":
+            hasher = absolute_import("hasher")
+            if hasher.hasher():
+                continue
+            break
+        elif choice == "2":
+            folder_admin = absolute_import("folder_admin")
+            if folder_admin.folder_admin():
+                continue
+            break
+        elif choice == "0":
+            help_module = absolute_import("help")
+            if help_module.run_help():
+                continue
+        break
 
-    else:
-        print("Programme ended")
+    print("Programme ended")
 
 
 if __name__ == "__main__":
