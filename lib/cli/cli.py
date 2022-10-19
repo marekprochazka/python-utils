@@ -9,6 +9,7 @@ COLOR__CYAN = 2
 COLOR__RED = 3
 
 
+# Class representing string datatype passed to the cli components
 class WinString:
     def __init__(self, text: str, color: int, start_x: int, start_y: int):
         self.text = text
@@ -17,12 +18,14 @@ class WinString:
         self.start_y = start_y
 
 
+# Class representing option datatype passed to the cli select-type components
 class SelectOption(Generic[T]):
     def __init__(self, text: str, value: T):
         self.text = text
         self.value = value
 
 
+# Config class for select-type components
 class SelectConfig(Generic[T]):
     def __init__(self, options: List[SelectOption[T]], helper_text: List[WinString], default_color: int,
                  highlighted_color: int, start_x: int, start_y: int):
@@ -34,21 +37,38 @@ class SelectConfig(Generic[T]):
         self.start_y = start_y
 
 
+# component decorator
+def component(func):
+    # from functools import wraps
+    # @wraps(func)
+    def wrapper(self, *args, **kwargs) -> Any:
+        self.pressed_key = None
+        return func(self, *args, **kwargs)
+
+    return wrapper
+
+
+# Main class used as instance of the cli (controller)
 class CLI:
-    pressed_key = None
+    # key constants (default from curses were not working)
     KEY_ENTER: int = 10
     KEY_ESC: int = 27
     KEY_SPACE: int = 32
     KEY_BACKSPACE: int = 8
     KEY_LEFT: int = 260
     KEY_RIGHT: int = 261
+
+    # standard screen
     stdscr = None
+    # variables used in all components
+    pressed_key = None
 
     def __init__(self):
         self.__init_cli()
         self.stdscr.erase()
         self.stdscr.refresh()
 
+    # default setting of the cli (curses)
     def __init_cli(self):
         self.stdscr = curses.initscr()
         curses.start_color()
@@ -64,6 +84,7 @@ class CLI:
     def exit(self) -> None:
         self.__end_cli()
 
+    @component
     def multi_select(self, config: SelectConfig) -> List[SelectOption]:
         # Initialize variables
         selected_options = []
@@ -127,9 +148,9 @@ class CLI:
         curses.curs_set(1)
         return selected_options
 
+    @component
     def select(self, config: SelectConfig) -> Optional[SelectOption]:
         # Initialize variables
-        self.pressed_key = None
         selected_option = None
         num_options = len(config.options)
         highlighted_option = 0
@@ -163,15 +184,6 @@ class CLI:
                 if highlighted_option >= num_options:
                     highlighted_option = 0
 
-            # Draw the window
-
-            # debug
-            # import time
-            # self.stdscr.addstr(9, 0, "debug")
-            # self.stdscr.addstr(10, 0, f'{highlighted_option}')
-            # self.stdscr.addstr(11, 0, f'{self.pressed_key}')
-            # self.stdscr.addstr(12, 0, f'{time.time()}')
-
             # Draw helper text
             for txt in config.helper_text:
                 self.stdscr.attron(curses.color_pair(txt.color))
@@ -191,12 +203,10 @@ class CLI:
 
         self.stdscr.clear()
         self.stdscr.refresh()
-        curses.curs_set(1)
         return selected_option
 
+    @component
     def text(self, text: List[WinString]) -> None:
-        self.pressed_key = None
-
         while True:
             self.stdscr.erase()
             self.stdscr.refresh()
@@ -216,11 +226,11 @@ class CLI:
             # wait for key input
             self.pressed_key = self.stdscr.getch()
 
+    @component
     def text_input(self, help_text: List[WinString]) -> str:
         # Initialize variables
         input_text = ""
         curses.curs_set(1)
-        self.pressed_key = None
 
         while True:
             self.stdscr.erase()
@@ -260,6 +270,7 @@ class CLI:
         return input_text
 
 
+# Useful preset components that in default don't need CLI instance (but can be passed into)
 class CliUtils:
     @staticmethod
     def yes_no(question: List[WinString], answers_start_x: int = None, answers_start_y: int = None,
