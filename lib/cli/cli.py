@@ -1,5 +1,8 @@
 import curses
-from typing import List, Optional, Any
+from curses.textpad import Textbox, rectangle
+from typing import List, Optional, Any, TypeVar, Generic
+
+T = TypeVar('T')
 
 COLOR__WHITE = 1
 COLOR__CYAN = 2
@@ -14,14 +17,14 @@ class WinString:
         self.start_y = start_y
 
 
-class SelectOption:
-    def __init__(self, text: str, value: Any):
+class SelectOption(Generic[T]):
+    def __init__(self, text: str, value: T):
         self.text = text
         self.value = value
 
 
-class SelectConfig:
-    def __init__(self, options: List[SelectOption], helper_text: List[WinString], default_color: int,
+class SelectConfig(Generic[T]):
+    def __init__(self, options: List[SelectOption[T]], helper_text: List[WinString], default_color: int,
                  highlighted_color: int, start_x: int, start_y: int):
         self.options = options
         self.helper_text = helper_text
@@ -36,6 +39,9 @@ class CLI:
     KEY_ENTER: int = 10
     KEY_ESC: int = 27
     KEY_SPACE: int = 32
+    KEY_BACKSPACE: int = 8
+    KEY_LEFT: int = 260
+    KEY_RIGHT: int = 261
     stdscr = None
 
     def __init__(self):
@@ -123,6 +129,7 @@ class CLI:
 
     def select(self, config: SelectConfig) -> Optional[SelectOption]:
         # Initialize variables
+        self.pressed_key = None
         selected_option = None
         num_options = len(config.options)
         highlighted_option = 0
@@ -188,6 +195,7 @@ class CLI:
         return selected_option
 
     def text(self, text: List[WinString]) -> None:
+        self.pressed_key = None
 
         while True:
             self.stdscr.erase()
@@ -207,6 +215,49 @@ class CLI:
 
             # wait for key input
             self.pressed_key = self.stdscr.getch()
+
+    def text_input(self, help_text: List[WinString]) -> str:
+        # Initialize variables
+        input_text = ""
+        curses.curs_set(1)
+        self.pressed_key = None
+
+        while True:
+            self.stdscr.erase()
+            self.stdscr.refresh()
+
+            # Handle last key input
+            if self.pressed_key:
+                if self.pressed_key == self.KEY_ENTER:
+                    break
+                if self.pressed_key == self.KEY_ESC:
+                    input_text = ""
+                    break
+                if self.pressed_key == self.KEY_BACKSPACE:
+                    self.pressed_key = None
+                    input_text = input_text[:-1]
+                    continue
+                if self.pressed_key == curses.KEY_DC:
+                    input_text = ""
+                    self.pressed_key = None
+                    continue
+                if 32 <= self.pressed_key <= 126:
+                    input_text += chr(self.pressed_key)
+                    self.pressed_key = None
+                    continue
+            # Draw the window
+            # Draw helper text
+            for txt in help_text:
+                self.stdscr.addstr(txt.start_y, txt.start_x,
+                                   txt.text, txt.color)
+            # Draw input
+            self.stdscr.addstr(help_text[-1].start_y + 1, help_text[-1].start_x,
+                               input_text)
+
+            # Wait for key input
+            self.pressed_key = self.stdscr.getch()
+        curses.curs_set(0)
+        return input_text
 
 
 class CliUtils:

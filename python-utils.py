@@ -1,10 +1,21 @@
 import importlib.util
 import sys
+from enum import Enum
+
 import cli
 
 PROJECT_PATH = list(sys.argv)[1]
 
 
+class MainMenuOptionTypes(Enum):
+    HELP = 0
+    FILE_ENCRYPTOR = 1
+    FOLDER_ADMIN = 2
+    EXIT = 3
+    NO_CHOICE = -1
+
+
+# Relative imports cannot be used in this case, because the script is run from the command line in a different directory
 def absolute_import(module_name: str, file_name: str = None) -> object:
     if not file_name:
         file_name = module_name
@@ -15,12 +26,10 @@ def absolute_import(module_name: str, file_name: str = None) -> object:
     return module
 
 
-def menu_select(controller: cli.CLI) -> cli.SelectOption:
-    options = [
-        cli.SelectOption("Help", "0"),
-        cli.SelectOption("File encryptor/decryptor", "1"),
-        cli.SelectOption("Folder administrator", "2"),
-    ]
+# Main menu that will be displayed when the program is started
+# Function waits for user to make a choice and then returns the choice
+def main_menu(controller: cli.CLI) -> cli.SelectOption[MainMenuOptionTypes]:
+    # Text displayed at the top of main menu
     helper_text = [
         cli.WinString("python-window-utils version 0.1.0", cli.COLOR__WHITE, 0, 0),
         cli.WinString("Copyright (c) 2022 Marek Prochazka",
@@ -30,7 +39,14 @@ def menu_select(controller: cli.CLI) -> cli.SelectOption:
         cli.WinString(
             "_______________________________________________________________________________", cli.COLOR__WHITE, 0, 4),
     ]
+    options = [
+        cli.SelectOption("Help", MainMenuOptionTypes.HELP),
+        cli.SelectOption("File encryptor/decryptor", MainMenuOptionTypes.FILE_ENCRYPTOR),
+        cli.SelectOption("Folder administrator", MainMenuOptionTypes.FOLDER_ADMIN),
+        cli.SelectOption("Exit", MainMenuOptionTypes.EXIT),
+    ]
 
+    # Configuration of the main menu component
     conf = cli.SelectConfig(
         options=options,
         helper_text=helper_text,
@@ -39,32 +55,38 @@ def menu_select(controller: cli.CLI) -> cli.SelectOption:
         start_x=0,
         start_y=5,
     )
+    # Display the main menu and wait for user to make a choice
     return controller.select(conf)
 
 
 def main():
+    # instance of CLI controller used in menu component
+    controller = cli.CLI()
+    # Runs in infinite loop until user decides to exit the program
     while True:
-        controller = cli.CLI()
-        choice = menu_select(controller)
-        choice = choice.value if choice != None else "None"
+        # Display main menu and wait for user to make a choice
+        choice = main_menu(controller)
+        choice = choice.value if choice is not None else MainMenuOptionTypes.NO_CHOICE
         controller.exit()
-
-        if choice == "1":
-            hasher = absolute_import("hasher")
-            if hasher.hasher():
-                continue
-            break
-        elif choice == "2":
-            folder_admin = absolute_import("folder_admin")
-            if folder_admin.folder_admin():
-                continue
-            break
-        elif choice == "0":
+        # Runs selected subprogram
+        # Each subprogram returns bool
+        # True = user wants to go back to main menu
+        # False = user wants to exit the program
+        if choice == MainMenuOptionTypes.HELP:
             help_module = absolute_import("help")
-            if help_module.run_help():
+            if help_module.main():
+                continue
+            break
+        elif choice == MainMenuOptionTypes.FILE_ENCRYPTOR:
+            hasher = absolute_import("hasher")
+            if hasher.main():
+                continue
+            break
+        elif choice == MainMenuOptionTypes.FOLDER_ADMIN:
+            folder_admin = absolute_import("folder_admin")
+            if folder_admin.main():
                 continue
         break
-
     print("Programme ended")
 
 
