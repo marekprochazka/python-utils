@@ -12,6 +12,7 @@ class OptionTypes(Enum):
     EXIT = -1
 
 
+# Options displayed in the main menu of help subprogram
 HELP_OPTIONS = [
     cli.SelectOption("Encryptor", OptionTypes.ENCRYPTOR),
     cli.SelectOption("Decryptor", OptionTypes.DECRYPTOR),
@@ -20,6 +21,7 @@ HELP_OPTIONS = [
 ]
 
 
+# Function waits for user to make a choice and then returns the choice (option)
 def select_option() -> OptionTypes:
     controller = cli.CLI()
     helper_text = [
@@ -39,12 +41,15 @@ def select_option() -> OptionTypes:
     return choice
 
 
-# Makes user select file to encrypt, write code and then encrypts the file
+# Makes user select file to encrypt, write key and then encrypts the file
 def encrypt_ui() -> bool:
     controller = cli.CLI()
+
     file_helper_text = [
         cli.WinString("Select file to encrypt:", cli.COLOR__WHITE, 0, 0)]
+    # list of files in current directory
     file_options = [cli.SelectOption(f, f) for f in os.listdir('.') if os.path.isfile(f)]
+    # add cancel option
     file_options.append(cli.SelectOption("Cancel", "Cancel"))
     file_conf = cli.SelectConfig[str](
         options=file_options,
@@ -66,6 +71,8 @@ def encrypt_ui() -> bool:
     key_user_input = controller.text_input(help_text=key_helper_text)
 
     do_encrypt(key_user_input, file_name, file_suffix)
+
+    # ask user if he wants to delete original file
     if cli.CliUtils.yes_no(controller=controller, question=[
         cli.WinString("File was successfully encrypted", cli.COLOR__WHITE, 0, 0),
         cli.WinString("Do you want to delete not encrypted file?", cli.COLOR__WHITE, 0, 1)]):
@@ -75,6 +82,7 @@ def encrypt_ui() -> bool:
     return True
 
 
+# encrypt function
 def do_encrypt(key: str, file_name: str, file_suffix: str) -> None:
     fernet: Fernet = Fernet(base64.b64encode(key.zfill(32).encode('ascii')))
 
@@ -86,15 +94,16 @@ def do_encrypt(key: str, file_name: str, file_suffix: str) -> None:
     with open(f"{file_name}.{file_suffix}.encr", "wb") as file:
         file.write(encrypted)
 
-    print("Encrypted")
 
-
+# Makes user select file to decrypt, write key and then decrypts the file
 def decrypt_ui() -> bool:
     controller = cli.CLI()
 
     file_helper_text = [
         cli.WinString("Select file to decrypt:", cli.COLOR__WHITE, 0, 0)]
+    # list of files in current directory
     file_options = [cli.SelectOption(f, f) for f in os.listdir('.') if os.path.isfile(f)]
+    # add cancel option
     file_options.append(cli.SelectOption("Cancel", "Cancel"))
     file_conf = cli.SelectConfig[str](
         options=file_options,
@@ -129,6 +138,7 @@ def decrypt_ui() -> bool:
     return True
 
 
+# decrypt function
 def do_decrypt(key: str, file_name: str) -> bool:
     try:
         fernet: Fernet = Fernet(base64.b64encode(key.zfill(32).encode('ascii')))
@@ -146,6 +156,7 @@ def do_decrypt(key: str, file_name: str) -> bool:
         return False
 
 
+# Main function
 def main() -> bool:
     while True:
         choice = select_option()
@@ -163,5 +174,6 @@ def main() -> bool:
             return True
 
 
+# used for testing purposes
 if __name__ == "__main__":
     main()
