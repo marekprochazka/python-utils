@@ -42,11 +42,6 @@ def select_option() -> OptionTypes:
 # Makes user select file to encrypt, write code and then encrypts the file
 def encrypt_ui() -> bool:
     controller = cli.CLI()
-    key_helper_text = [
-        cli.WinString("Write key phrase you want to use to decrypt once encrypted file:", cli.COLOR__WHITE, 0, 0),
-    ]
-    key_user_input = controller.text_input(help_text=key_helper_text)
-
     file_helper_text = [
         cli.WinString("Select file to encrypt:", cli.COLOR__WHITE, 0, 0)]
     file_options = [cli.SelectOption(f, f) for f in os.listdir('.') if os.path.isfile(f)]
@@ -64,9 +59,18 @@ def encrypt_ui() -> bool:
         controller.exit()
         return True
     file_name, file_suffix = file_choice.split(".")
+
+    key_helper_text = [
+        cli.WinString("Write key phrase you want to use to decrypt once encrypted file:", cli.COLOR__WHITE, 0, 0),
+    ]
+    key_user_input = controller.text_input(help_text=key_helper_text)
+
     do_encrypt(key_user_input, file_name, file_suffix)
-    controller.text([cli.WinString("File was successfully encrypted", cli.COLOR__WHITE, 0, 0),
-                     cli.WinString("Press [Enter] key to continue", cli.COLOR__WHITE, 0, 1)])
+    if cli.CliUtils.yes_no(controller=controller, question=[
+        cli.WinString("File was successfully encrypted", cli.COLOR__WHITE, 0, 0),
+        cli.WinString("Do you want to delete not encrypted file?", cli.COLOR__WHITE, 0, 1)]):
+        os.remove(file_choice)
+
     controller.exit()
     return True
 
@@ -85,22 +89,61 @@ def do_encrypt(key: str, file_name: str, file_suffix: str) -> None:
     print("Encrypted")
 
 
-def decrypt() -> None:
+def decrypt_ui() -> bool:
+    controller = cli.CLI()
+
+    file_helper_text = [
+        cli.WinString("Select file to decrypt:", cli.COLOR__WHITE, 0, 0)]
+    file_options = [cli.SelectOption(f, f) for f in os.listdir('.') if os.path.isfile(f)]
+    file_options.append(cli.SelectOption("Cancel", "Cancel"))
+    file_conf = cli.SelectConfig[str](
+        options=file_options,
+        helper_text=file_helper_text,
+        default_color=cli.COLOR__WHITE,
+        highlighted_color=cli.COLOR__CYAN,
+        start_x=0,
+        start_y=1,
+    )
+    file_choice = controller.select(file_conf).value
+    if file_choice == "Cancel":
+        controller.exit()
+        return True
+
+    key_helper_text = [
+        cli.WinString("Write key phrase you used to encrypt file:", cli.COLOR__WHITE, 0, 0),
+    ]
+    key_user_input = controller.text_input(help_text=key_helper_text)
+
+    if do_decrypt(key_user_input, file_choice):
+        if cli.CliUtils.yes_no(controller=controller,
+                               question=[
+                                   cli.WinString("File was successfully decrypted", cli.COLOR__WHITE, 0, 0),
+                                   cli.WinString("Do you want to delete encrypted file?", cli.COLOR__WHITE, 0, 1)]):
+            os.remove(file_choice)
+    else:
+        controller.text([cli.WinString("File was not decrypted -> Invalid key", cli.COLOR__WHITE, 0, 0),
+                         cli.WinString("Press [Enter] key to continue", cli.COLOR__WHITE, 0, 1)])
+
+    controller.exit()
+
+    return True
+
+
+def do_decrypt(key: str, file_name: str) -> bool:
     try:
-        key: str = input("Enter key: ")
         fernet: Fernet = Fernet(base64.b64encode(key.zfill(32).encode('ascii')))
         dr = os.getcwd()
-        file_name: str = input("Enter .encr file name: ")
-        with open(f"{dr}\{file_name}.encr", "rb") as file:
+        with open(f"{dr}\{file_name}", "rb") as file:
             data: bytes = file.read()
 
         decrypted: bytes = fernet.decrypt(data)
-        with open(f"{file_name}.decr", "wb") as file:
+        new_file_name = file_name.split(".encr")[0]
+        with open(f"{dr}\{new_file_name}", "wb") as file:
             file.write(decrypted)
 
-        print("Decrypted")
+        return True
     except InvalidToken:
-        print("Invalid key")
+        return False
 
 
 def main() -> bool:
@@ -115,7 +158,8 @@ def main() -> bool:
                 continue
             return True
         elif choice == OptionTypes.DECRYPTOR:
-            decrypt()
+            if decrypt_ui():
+                continue
             return True
 
 

@@ -263,8 +263,8 @@ class CLI:
 class CliUtils:
     @staticmethod
     def yes_no(question: List[WinString], answers_start_x: int = None, answers_start_y: int = None,
-               yes_string: str = "Yes", no_string: str = "No") -> bool:
-        controller = CLI()
+               yes_string: str = "Yes", no_string: str = "No", controller: CLI = None) -> bool:
+        controller = CLI() if not controller else controller
         answers_start_x = answers_start_x if answers_start_x else 0
         answers_start_y = answers_start_y if answers_start_y else len(question) + 1
 
