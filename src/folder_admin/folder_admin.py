@@ -35,7 +35,7 @@ class Extensions(Enum):
              "hh", "hxx", "hpp", "hxx", "cs", "csx", "asm"]
 
 
-def folder_admin():
+def main():
     err_msg, config_file_state = validate_config_file()
     if config_file_state == ValidateConfigStatus.DOES_NOT_EXIST:
         create_new = cli.CliUtils.yes_no(question=[cli.WinString(err_msg[0].value, cli.COLOR__WHITE, 0, 0),
@@ -159,4 +159,4 @@ def run_folder_admin(verbose: bool = False):
 
 # executor for debug purposes
 if __name__ == "__main__":
-    folder_admin()
+    main()

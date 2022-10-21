@@ -1,7 +1,7 @@
 import os
 from typing import List, Callable, Any, Optional
 from abc import ABC
-from tests.folder_admin.structures import File, Directory
+from tests.base.structures import File, Directory
 import shutil
 
 
@@ -69,7 +69,7 @@ class BaseFileSystemTest(BaseTest):
 
         return test_folder_state
 
-    def execute_in_test_folder(self, command: Callable) -> Any:
+    def execute_in_test_folder(self, command: Callable) -> Any or None:
         current_path = os.path.abspath(os.getcwd())
         os.chdir(self.test_folder)
         output = command()
