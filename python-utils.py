@@ -42,7 +42,7 @@ def main_menu(controller: cli.CLI) -> cli.SelectOption[MainMenuOptionTypes]:
     options = [
         cli.SelectOption("Help", MainMenuOptionTypes.HELP),
         cli.SelectOption("File encryptor/decryptor", MainMenuOptionTypes.FILE_ENCRYPTOR),
-        cli.SelectOption("Folder administrator", MainMenuOptionTypes.FOLDER_ADMIN),
+        cli.SelectOption("Folder administrator (UNSTABLE!)", MainMenuOptionTypes.FOLDER_ADMIN),
         cli.SelectOption("Exit", MainMenuOptionTypes.EXIT),
     ]
 

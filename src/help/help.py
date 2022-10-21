@@ -22,13 +22,68 @@ HELP_OPTIONS = [
 # Text displayed when user selects "Encryptor" option in help subprogram
 ENCRYPTOR_HELP_TEXT = [
     cli.WinString("Encryptor help:", cli.COLOR__WHITE, 0, 0),
-    cli.WinString("TODO", cli.COLOR__RED, 0, 1),
+    cli.WinString(
+        "This util is used as a tool to safely encrypt files with a custom key (passphrase) and to later decrypt the file",
+        cli.COLOR__WHITE, 0, 1),
+    cli.WinString(
+        "The encryption is done using Fernet algorithm, which is a symmetric encryption algorithm",
+        cli.COLOR__RED, 0, 2),
+    cli.WinString(
+        "Use case (Encryption):",
+        cli.COLOR__CYAN, 0, 4),
+    cli.WinString(
+        "1. Run pwu in directory with files you want to encrypt",
+        cli.COLOR__WHITE, 0, 5),
+    cli.WinString(
+        "2. Select 'File encryptor/decryptor' option",
+        cli.COLOR__WHITE, 0, 6),
+    cli.WinString(
+        "3. Select 'Encryptor' option",
+        cli.COLOR__WHITE, 0, 7),
+    cli.WinString(
+        "4. Select file to encrypt",
+        cli.COLOR__WHITE, 0, 8),
+    cli.WinString(
+        "5. Enter passphrase you want to use to encrypt the file",
+        cli.COLOR__WHITE, 0, 9),
+    cli.WinString("(If you forget your passphrase it will be impossible to recover file!)", cli.COLOR__RED, 56, 9),
+    cli.WinString(
+        "6. Choose if you want to delete the original file or not",
+        cli.COLOR__WHITE, 0, 10),
+    cli.WinString(
+        "7. File is encrypted and saved in the same directory with .enc extension",
+        cli.COLOR__WHITE, 0, 11),
+    cli.WinString(
+        "Use case (Decryption):",
+        cli.COLOR__CYAN, 0, 13),
+    cli.WinString(
+        "1. Run pwu in directory with files you want to decrypt",
+        cli.COLOR__WHITE, 0, 14),
+    cli.WinString(
+        "2. Select 'File encryptor/decryptor' option",
+        cli.COLOR__WHITE, 0, 15),
+    cli.WinString(
+        "3. Select 'Decryptor' option",
+        cli.COLOR__WHITE, 0, 16),
+    cli.WinString(
+        "4. Select file to decrypt",
+        cli.COLOR__WHITE, 0, 17),
+    cli.WinString(
+        "5. Enter passphrase you used to encrypt the file",
+        cli.COLOR__WHITE, 0, 18),
+    cli.WinString(
+        "6. Choose if you want to delete the original (.encr) file or not",
+        cli.COLOR__WHITE, 0, 19),
+    cli.WinString(
+        "7. File is decrypted and saved in the same directory with original name",
+        cli.COLOR__WHITE, 0, 20),
+    cli.WinString("", cli.COLOR__WHITE, 0, 21),
 ]
 
 # Text displayed when user selects "Folder Admin" option in help subprogram
 FOLDER_ADMIN_HELP_TEXT = [
     cli.WinString("Folder admin help:", cli.COLOR__WHITE, 0, 0),
-    cli.WinString("TODO", cli.COLOR__RED, 0, 1),
+    cli.WinString("DOCUMENTATION WILL BE ADDED AFTER UTIL WILL BE FIXED AND REFACTORED", cli.COLOR__RED, 0, 1),
 ]
 
 
@@ -63,7 +118,7 @@ def show_help(helper_text: List[cli.WinString]) -> bool:
         default_color=cli.COLOR__WHITE,
         highlighted_color=cli.COLOR__CYAN,
         start_x=0,
-        start_y=len(helper_text)+1,
+        start_y=len(helper_text) + 1,
     )
     controller = cli.CLI()
     choice = controller.select(conf).value
