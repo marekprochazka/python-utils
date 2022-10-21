@@ -1,5 +1,5 @@
 from tests.base.base_test import BaseFileSystemTest
-from tests.folder_admin.structures import File, Directory
+from tests.base.structures import File, Directory
 from src.folder_admin.folder_admin import run_folder_admin, validate_config_file, create_config_file, \
     ValidateConfigStatus, \
     ValidateConfigErrorMessage, Extensions
