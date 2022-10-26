@@ -1,3 +1,5 @@
+from argparse import Namespace
+
 from cryptography.fernet import Fernet, InvalidToken
 import base64
 import os
@@ -63,14 +65,13 @@ def encrypt_ui() -> bool:
     if file_choice == "Cancel":
         controller.exit()
         return True
-    file_name, file_suffix = file_choice.split(".")
 
     key_helper_text = [
         cli.WinString("Write key phrase you want to use to decrypt once encrypted file:", cli.COLOR__WHITE, 0, 0),
     ]
     key_user_input = controller.text_input(help_text=key_helper_text)
 
-    do_encrypt(key_user_input, file_name, file_suffix)
+    do_encrypt(key_user_input, file_choice)
 
     # ask user if he wants to delete original file
     if cli.CliUtils.yes_no(controller=controller, question=[
@@ -83,15 +84,15 @@ def encrypt_ui() -> bool:
 
 
 # encrypt function
-def do_encrypt(key: str, file_name: str, file_suffix: str) -> None:
+def do_encrypt(key: str, file_name: str) -> None:
     fernet: Fernet = Fernet(base64.b64encode(key.zfill(32).encode('ascii')))
 
     dr = os.getcwd()
-    with open(f"{dr}\{file_name}.{file_suffix}", "rb") as file:
+    with open(f"{dr}\{file_name}", "rb") as file:
         data: bytes = file.read()
 
     encrypted: bytes = fernet.encrypt(data)
-    with open(f"{file_name}.{file_suffix}.encr", "wb") as file:
+    with open(f"{file_name}.encr", "wb") as file:
         file.write(encrypted)
 
 
@@ -156,22 +157,44 @@ def do_decrypt(key: str, file_name: str) -> bool:
         return False
 
 
+def validate_flag_args(args: Namespace) -> None:
+    if not args.action:
+        raise Exception("Action flag is required")
+    if not args.key_phrase:
+        raise Exception("Key phrase flag is required")
+    if not args.input_file:
+        raise Exception("Input file flag is required")
+    if not os.path.isfile(args.input_file):
+        raise Exception("Input file is not a file")
+
+
 # Main function
-def main() -> bool:
-    while True:
-        choice = select_option()
-        if choice == OptionTypes.EXIT:
-            return False
-        elif choice == OptionTypes.GO_BACK:
-            return True
-        elif choice == OptionTypes.ENCRYPTOR:
-            if encrypt_ui():
-                continue
-            return True
-        elif choice == OptionTypes.DECRYPTOR:
-            if decrypt_ui():
-                continue
-            return True
+def main(flag_mode: bool = False, args: Namespace = None) -> bool:
+    if not flag_mode:
+        while True:
+            choice = select_option()
+            if choice == OptionTypes.EXIT:
+                return False
+            elif choice == OptionTypes.GO_BACK:
+                return True
+            elif choice == OptionTypes.ENCRYPTOR:
+                if encrypt_ui():
+                    continue
+                return True
+            elif choice == OptionTypes.DECRYPTOR:
+                if decrypt_ui():
+                    continue
+                return True
+    else:
+        validate_flag_args(args)
+        if args.action == "encrypt":
+            do_encrypt(args.key_phrase, args.input_file)
+            print("File was successfully encrypted")
+        elif args.action == "decrypt":
+            if do_decrypt(args.key_phrase, args.input_file):
+                print("File was successfully decrypted")
+            else:
+                print("File was not decrypted -> Invalid key")
 
 
 # used for testing purposes

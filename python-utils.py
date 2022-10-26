@@ -4,7 +4,28 @@ from enum import Enum
 
 import cli
 
-PROJECT_PATH = list(sys.argv)[1]
+import argparse
+
+
+class Utils(Enum):
+    FILE_ENCRYPTOR = "hasher"
+    FOLDER_ADMIN = "folder_admin"
+
+
+# Flags definition
+parser = argparse.ArgumentParser()
+parser.add_argument("project_path", help="Path to the project")
+parser.add_argument("-f", "--flag-mode", help="Flag mode", required=False, action="store_true")
+parser.add_argument("-u", "--util", help="Util to run", required=False, type=str,
+                    choices=[util.value for util in Utils])
+# hasher args
+parser.add_argument("-a", "--action", help="Action to perform", required=False, type=str, choices=['encrypt', 'decrypt'])
+parser.add_argument("-k", "--key-phrase", help="Key phrase", required=False, type=str)
+parser.add_argument("-i", "--input-file", help="File to encrypt/decrypt (relative path)", required=False, type=str)
+
+args = parser.parse_args()
+
+PROJECT_PATH = args.project_path
 
 
 class MainMenuOptionTypes(Enum):
@@ -60,33 +81,45 @@ def main_menu(controller: cli.CLI) -> cli.SelectOption[MainMenuOptionTypes]:
 
 
 def main():
-    # instance of CLI controller used in menu component
-    controller = cli.CLI()
-    # Runs in infinite loop until user decides to exit the program
-    while True:
-        # Display main menu and wait for user to make a choice
-        choice = main_menu(controller)
-        choice = choice.value if choice is not None else MainMenuOptionTypes.NO_CHOICE
-        controller.exit()
-        # Runs selected subprogram
-        # Each subprogram returns bool
-        # True = user wants to go back to main menu
-        # False = user wants to exit the program
-        if choice == MainMenuOptionTypes.HELP:
-            help_module = absolute_import("help")
-            if help_module.main():
-                continue
+    if not args.flag_mode:
+        for key, value in args.__dict__.items():
+            if key != "project_path" and key != "flag_mode" and value:
+                # raise error due to using a flag without flag mode
+                raise ValueError(f"Flag '{key}' is not supported without flag mode")
+        # instance of CLI controller used in menu component
+        controller = cli.CLI()
+        # Runs in infinite loop until user decides to exit the program
+        while True:
+            # Display main menu and wait for user to make a choice
+            choice = main_menu(controller)
+            choice = choice.value if choice is not None else MainMenuOptionTypes.NO_CHOICE
+            controller.exit()
+            # Runs selected subprogram
+            # Each subprogram returns bool
+            # True = user wants to go back to main menu
+            # False = user wants to exit the program
+            if choice == MainMenuOptionTypes.HELP:
+                help_module = absolute_import("help")
+                if help_module.main():
+                    continue
+                break
+            elif choice == MainMenuOptionTypes.FILE_ENCRYPTOR:
+                hasher = absolute_import("hasher")
+                if hasher.main():
+                    continue
+                break
+            elif choice == MainMenuOptionTypes.FOLDER_ADMIN:
+                folder_admin = absolute_import("folder_admin")
+                if folder_admin.main():
+                    continue
             break
-        elif choice == MainMenuOptionTypes.FILE_ENCRYPTOR:
+    else:
+        if args.util == Utils.FILE_ENCRYPTOR.value:
             hasher = absolute_import("hasher")
-            if hasher.main():
-                continue
-            break
-        elif choice == MainMenuOptionTypes.FOLDER_ADMIN:
+            hasher.main(flag_mode=True, args=args)
+        elif args.util == Utils.FOLDER_ADMIN.value:
             folder_admin = absolute_import("folder_admin")
-            if folder_admin.main():
-                continue
-        break
+            folder_admin.main(flag_mode=True, args=args)
     print("Programme ended")
 
 
